@@ -9,19 +9,25 @@ let currentPlayer = 'X';
 let gameActive = false;
 let singlePlayerMode = false;
 
-// Winning combinations
 const WIN_COMBINATIONS = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [2,4,6]
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
 ];
 
-// Start game
+// ---- Sounds ----
+const clickSound = new Audio('sounds/click.mp3.mp3');  // move
+const winSound = new Audio('sounds/win.mp3.wav');      // win
+
+clickSound.volume = 0.3;
+winSound.volume = 0.5;
+// -----------------
+
 function startGame(mode) {
     singlePlayerMode = mode === 'single';
     cells.forEach(cell => {
@@ -35,16 +41,17 @@ function startGame(mode) {
 }
 
 function handleCellClick(e) {
-    const cell = e.target;
+    let cell = e.target;
     if (!gameActive || cell.textContent) return;
 
     cell.textContent = currentPlayer;
+    clickSound.play();  // play click sound
 
     if (checkWin(currentPlayer)) {
         endGame(false);
         return;
     } else if (isDraw()) {
-        endGame(true);
+        endGame(true);  // draw without sound
         return;
     }
 
@@ -55,12 +62,10 @@ function handleCellClick(e) {
     }
 }
 
-
 function switchPlayer() {
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
     message.textContent = `Turn: ${currentPlayer}`;
 }
-
 
 function checkWin(player) {
     return WIN_COMBINATIONS.some(combination => {
@@ -72,13 +77,16 @@ function isDraw() {
     return [...cells].every(cell => cell.textContent);
 }
 
-
 function endGame(draw) {
     gameActive = false;
+
     if (draw) {
-        message.textContent = "It's a Draw!";
+        message.textContent = "It's a Draw";
+        // no sound for draw
     } else {
         message.textContent = `${currentPlayer} Wins!`;
+        winSound.play();  // play win sound
+
         WIN_COMBINATIONS.forEach(combination => {
             if (combination.every(index => cells[index].textContent === currentPlayer)) {
                 combination.forEach(index => cells[index].classList.add('winner'));
@@ -87,17 +95,15 @@ function endGame(draw) {
     }
 }
 
-
 function aiMove() {
-    const emptyCells = [...cells].filter(cell => !cell.textContent);
+    let emptyCells = [...cells].filter(cell => !cell.textContent);
     if (emptyCells.length === 0) return;
 
-    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     setTimeout(() => {
         randomCell.click();
     }, 500);
 }
-
 
 restartButton.addEventListener('click', () => startGame(singlePlayerMode ? 'single' : 'two'));
 singlePlayerBtn.addEventListener('click', () => startGame('single'));

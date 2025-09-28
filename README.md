@@ -8,7 +8,7 @@ Supports **single-player (vs AI)** mode as well as **two-player** mode.
 ## 🔗 Links
 
 - Live Demo: [grid-clash-tau.vercel.app](https://grid-clash-tau.vercel.app/)  
-- Repository: [itx-Meelad56 / grid-clash](https://github.com/itx-Meelad56/grid-clash) :contentReference[oaicite:0]{index=0}  
+- Repository: [itx-Meelad56 / grid-clash](https://github.com/itx-Meelad56/grid-clash) 
 - LinkedIn: [Meelad Raza](https://www.linkedin.com/in/meelad-raza-736480339/)  
 - Email: meeladraza929@gmail.com  
 

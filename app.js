@@ -10,14 +10,14 @@ let gameActive = false;
 let singlePlayerMode = false;
 
 const WIN_COMBINATIONS = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
 ];
 
 // ---- Sounds ----
@@ -33,19 +33,25 @@ function startGame(mode) {
     cells.forEach(cell => {
         cell.textContent = '';
         cell.classList.remove('winner');
-        cell.addEventListener('click', handleCellClick, { once: true });
+        cell.addEventListener('click', handleCellClickWrapper);
     });
     currentPlayer = 'X';
     message.textContent = `Turn: ${currentPlayer}`;
     gameActive = true;
 }
 
-function handleCellClick(e) {
-    let cell = e.target;
+function handleCellClickWrapper(e) {
+    handleCellClick(e.target);
+}
+
+function handleCellClick(cell) {
     if (!gameActive || cell.textContent) return;
 
+    // Play click sound for every move
+    clickSound.currentTime = 0;
+    clickSound.play();
+
     cell.textContent = currentPlayer;
-    clickSound.play();  // play click sound
 
     if (checkWin(currentPlayer)) {
         endGame(false);
@@ -85,7 +91,7 @@ function endGame(draw) {
         // no sound for draw
     } else {
         message.textContent = `${currentPlayer} Wins!`;
-        winSound.play();  // play win sound
+        winSound.play();
 
         WIN_COMBINATIONS.forEach(combination => {
             if (combination.every(index => cells[index].textContent === currentPlayer)) {
@@ -101,10 +107,11 @@ function aiMove() {
 
     let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     setTimeout(() => {
-        randomCell.click();
+        handleCellClick(randomCell); // directly call to ensure click sound
     }, 500);
 }
 
+// Event listeners
 restartButton.addEventListener('click', () => startGame(singlePlayerMode ? 'single' : 'two'));
 singlePlayerBtn.addEventListener('click', () => startGame('single'));
 twoPlayerBtn.addEventListener('click', () => startGame('two'));
